@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cedric Darricau — Staff Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e0e;
+    --paper: #f5f0e8;
+    --accent: #c8502a;
+    --muted: #7a7060;
+    --rule: #d4cebf;
+    --highlight: #e8e0d0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 48px 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: end;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .header-left h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .header-left h1 span {
+    color: var(--accent);
+    display: block;
+  }
+
+  .title-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .title-bar .role {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+  }
+
+  .title-bar .sep { color: var(--rule); }
+
+  .title-bar .years {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .header-right {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 2;
+    color: var(--muted);
+  }
+
+  .header-right a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .header-right a:hover { color: var(--accent); border-color: var(--accent); }
+
+  .github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--rule);
+    padding: 4px 10px;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .github-link:hover { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .github-link svg { width: 14px; height: 14px; fill: currentColor; }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 48px;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  section:nth-child(1) { animation-delay: 0.1s; }
+  section:nth-child(2) { animation-delay: 0.2s; }
+  section:nth-child(3) { animation-delay: 0.3s; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* ── EXPERIENCE ITEMS ── */
+  .exp-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .exp-item:last-child { border-bottom: none; }
+
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 26px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--rule);
+    transition: background 0.2s;
+  }
+
+  .exp-item:hover::before { background: var(--accent); }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+
+  .company {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .period {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+
+  .role-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .location {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .exp-desc {
+    font-size: 0.85rem;
+    color: #3a3530;
+    line-height: 1.65;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar section { margin-bottom: 36px; }
+
+  /* SKILLS */
+  .skill-group { margin-bottom: 16px; }
+
+  .skill-cat {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--ink);
+    background: transparent;
+    transition: all 0.2s;
+  }
+
+  .tag:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .tag.primary {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* STATS */
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.82rem;
+  }
+
+  .stat-row:last-child { border-bottom: none; }
+
+  .stat-label { color: var(--muted); }
+
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* GITHUB REPOS */
+  .repo-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .repo-item:last-child { border-bottom: none; }
+
+  .repo-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .repo-name:hover { color: var(--accent); border-color: var(--accent); }
+
+  .repo-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+
+  .repo-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  /* INTERESTS */
+  .interest-list {
+    list-style: none;
+    font-size: 0.85rem;
+    line-height: 2;
+  }
+  .interest-list li::before {
+    content: '→ ';
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* FOOTER */
+  footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    animation: fadeUp 0.6s ease 0.5s both;
+  }
+
+  .footer-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PRINT */
+  @media print {
+    body::before { display: none; }
+    .page { padding: 20px; }
+    header, section { animation: none; }
+  }
+
+  @media (max-width: 680px) {
+    .page { padding: 32px 24px; }
+    .layout { grid-template-columns: 1fr; }
+    header { grid-template-columns: 1fr; }
+    .header-right { text-align: left; }
+  }
+
+  @media (max-width: 680px) {
+    .exp-item.exp-hidden { display: none; }
+    .exp-more-btn {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      background: none;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: center;
+    }
+    .exp-more-btn:hover { border-color: var(--accent); }
+  }
+
+  @media (min-width: 681px) {
+    .exp-more-btn { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <h1>Cedric<span>Darricau</span></h1>
+      <div class="title-bar">
+        <span class="role">Staff Engineer</span>
+        <span class="sep">/</span>
+        <span class="years">+20 ans d'expérience</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div>France · Full remote</div>
+      <div>
+        <a href="https://github.com/devsigner" target="_blank" class="github-link">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          github.com/devsigner
+        </a>
+      </div>
+      <div>
+        <a href="https://www.linkedin.com/in/cedric-darricau-b784657" target="_blank" class="github-link">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div class="layout">
+
+    <!-- MAIN COLUMN -->
+    <main>
+
+      <!-- SUMMARY -->
+      <section>
+        <div class="section-label">Profil</div>
+        <p style="font-size:0.92rem; line-height:1.8; color:#2a2520;">
+          Ingénieur full-stack passionné avec plus de 20 ans d'expérience dans la conception et le développement de systèmes web robustes et scalables. Spécialisé en <strong>Ruby on Rails</strong> et architectures modernes, j'évolue aujourd'hui au niveau Staff Engineer, où je combine expertise technique approfondie, leadership transverse et vision produit pour faire avancer des équipes entières. De la DA graphique au code backend, mon parcours singulier forge une sensibilité rare à l'intersection du design et de l'ingénierie.
+        </p>
+      </section>
+
+      <!-- EXPERIENCE -->
+      <section>
+        <div class="section-label">Expériences</div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Edulib</span>
+            <span class="period">sept. 2021 → aujourd'hui · 4 ans 7 mois</span>
+          </div>
+          <div class="role-title">Staff Engineer · Software Engineer</div>
+          <div class="location">📍 Paris, Île-de-France</div>
+          <div class="exp-desc">
+            Rôle hybride alliant vision technique et contribution directe au code. Conception et évolution de l'architecture logicielle, accompagnement des équipes de développement, définition des standards d'ingénierie et des bonnes pratiques. Interlocuteur transverse entre les équipes produit, design et engineering.
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Swile</span>
+            <span class="period">janv. 2020 → août 2021 · 1 an 8 mois</span>
+          </div>
+          <div class="role-title">Senior Ruby Software Engineer · Guild Lead</div>
+          <div class="exp-desc">
+            Senior engineer et Guild Lead au sein d'une scale-up fintech franco-brésilienne. Animation de la guilde d'ingénierie Ruby, montée en compétence des équipes, participation active à la définition de l'architecture des services backend.
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Titan Datacenters France</span>
+            <span class="period">août 2018 → janv. 2020 · 1 an 6 mois</span>
+          </div>
+          <div class="role-title">Software Engineer · Web Developer</div>
+          <div class="location">📍 Mougins, Provence-Alpes-Côte d'Azur</div>
+          <div class="exp-desc">
+            Développement et maintenance d'applications web pour un acteur de l'infrastructure datacenter. Stack Ruby avec focus sur la qualité du code et la performance applicative.
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Augment SAS</span>
+            <span class="period">nov. 2015 → août 2018 · 2 ans 10 mois</span>
+          </div>
+          <div class="role-title">Full-Stack Ruby Developer</div>
+          <div class="location">📍 Paris, Île-de-France</div>
+          <div class="exp-desc">
+            Développement full-stack sur une plateforme de réalité augmentée. Conception et implémentation de fonctionnalités complexes, intégration de solutions techniques innovantes.
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Avantage Graphique</span>
+            <span class="period">janv. 2008 → déc. 2017 · 10 ans</span>
+          </div>
+          <div class="role-title">Freelance · Design & Web Development</div>
+          <div class="location">📍 Cannes, Côte d'Azur</div>
+          <div class="exp-desc">
+            10 années d'activité indépendante : conception et développement d'applications et sites web, de bout en bout. Gestion de la relation client, suivi de projets, direction artistique. Web agency positionnée sur l'excellence graphique et la stratégie marketing digitale.
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Titan Datacenters France</span>
+            <span class="period">juin 2015 → nov. 2015 · 6 mois</span>
+          </div>
+          <div class="role-title">Senior Ruby Developer</div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Adjonction</span>
+            <span class="period">janv. 2005 → déc. 2007 · 3 ans</span>
+          </div>
+          <div class="role-title">Graphiste · Directeur Artistique</div>
+          <div class="exp-desc">
+            En charge des projets print et web. Clients : <em>Sanofi, Laboratoires Promothera, CytolNat, Ineldea, Scientec Nutrition.</em>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Martine Courtault Paris</span>
+            <span class="period">sept. 2001 → juil. 2004 · 2 ans 11 mois</span>
+          </div>
+          <div class="role-title">Graphic Designer · DA Print</div>
+          <div class="exp-desc">
+            Clients prestigieux : <em>Carrefour, Paul & Joe, Lancôme, Valmon, Kaloo.</em>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">WineWomanWorld.com</span>
+            <span class="period">mars 2001 → juin 2001 · 4 mois</span>
+          </div>
+          <div class="role-title">WebDesign & Intégration</div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">Bernard Bougon Communication</span>
+            <span class="period">déc. 2000 → mars 2001 · 4 mois</span>
+          </div>
+          <div class="role-title">Graphiste Web & Print</div>
+          <div class="exp-desc">
+            Réalisation graphique de projets internet, conception PLV. Clients : <em>Sanofi, Laboratoires Richelet.</em>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="company">HTTP Interactive</span>
+            <span class="period">juin 2000 → déc. 2000 · 7 mois</span>
+          </div>
+          <div class="role-title">WebDesign & Intégration</div>
+          <div class="exp-desc">Débuts dans le web à l'aube des années 2000.</div>
+        </div>
+
+        <button class="exp-more-btn" id="expMoreBtn">Voir plus</button>
+
+      </section>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- KEY STATS -->
+      <section>
+        <div class="section-label">Chiffres</div>
+        <div class="stat-row">
+          <span class="stat-label">Expérience</span>
+          <span class="stat-value">+20 ans</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Repos GitHub</span>
+          <span class="stat-value">40</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Stars GitHub</span>
+          <span class="stat-value">294</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Contributions 2025</span>
+          <span class="stat-value">1244</span>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-label">Compétences</div>
+        <div class="skill-group">
+          <div class="skill-cat">Transversal</div>
+          <div class="skill-tags">
+            <span class="tag">Analyse</span>
+            <span class="tag primary">Architecture logicielle</span>
+            <span class="tag">Design patterns</span>
+            <span class="tag primary">Management</span>
+            <span class="tag primary">Transmission de compétences</span>
+            <span class="tag">Code review</span>
+            <span class="tag">Refactoring</span>
+            <span class="tag">Documentation</span>
+            <span class="tag">Agilité</span>
+            <span class="tag">Veille technologique</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- INTERESTS -->
+      <section>
+        <div class="section-label">Focus actuel</div>
+        <ul class="interest-list">
+          <li>Rails API + React apps</li>
+          <li>iOS - Swift</li>
+          <li>Bi-directional sync</li>
+          <li>TypeScript / React</li>
+        </ul>
+      </section>
+
+      <section>
+        <div class="skill-group">
+          <div class="skill-cat">Backend</div>
+          <div class="skill-tags">
+            <span class="tag primary">Ruby on Rails</span>
+            <span class="tag primary">Ruby</span>
+            <span class="tag">API REST</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Redis</span>
+            <span class="tag">Sidekiq</span>
+            <span class="tag">Bash</span>
+            <span class="tag">Git</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-cat">Frontend & Mobile</div>
+          <div class="skill-tags">
+            <span class="tag">iOS / Swift</span>
+            <span class="tag primary">React</span>
+            <span class="tag primary">JavaScript</span>
+            <span class="tag">HTML/CSS</span>
+            <span class="tag">Sass</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-cat">Architecture</div>
+          <div class="skill-tags">
+            <span class="tag">Sync temps réel</span>
+            <span class="tag">MVC</span>
+            <span class="tag">Event machine</span>
+            <span class="tag">TDD</span>
+            <span class="tag">Design patterns</span>
+            <span class="tag">SOLID</span>
+            <span class="tag">DDD</span>
+            <span class="tag">API REST</span>
+            <span class="tag">Microservices</span>
+            <span class="tag">CI/CD</span>
+            <span class="tag">Docker</span>
+          </div>
+        </div>
+
+        <!-- TOOLS -->
+        <div class="section-label">Outils</div>
+        <div class="skill-tags">
+          <span class="tag">MacBook Pro</span>
+          <span class="tag">Alacritty</span>
+          <span class="tag">Tmux</span>
+          <span class="tag">Nvim</span>
+          <span class="tag">Arc</span>
+          <span class="tag">Git</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Fish shell</span>
+        </div>
+
+      </section>
+
+      <!-- GITHUB REPOS -->
+      <section>
+        <div class="section-label">Projets GitHub</div>
+
+        <div class="repo-item">
+          <a href="https://nemory-app.darricau.dev" target="_blank" class="repo-name">🧠 Nemory</a>
+          <div class="repo-desc">Application de mémorisation espacée</div>
+          <div class="repo-meta"><span>🔒 privé</span></div>
+        </div>
+
+        <div class="repo-item">
+          <a href="https://github.com/devsigner/prawn-invoice-example" target="_blank" class="repo-name">prawn-invoice-example</a>
+          <div class="repo-desc">PDF invoice generation with Ruby Prawn</div>
+          <div class="repo-meta"><span>Ruby</span><span>⭐ 12</span><span>🔀 5</span></div>
+        </div>
+
+        <div class="repo-item">
+          <a href="https://github.com/devsigner/spree_page_cache" target="_blank" class="repo-name">spree_page_cache</a>
+          <div class="repo-desc">Spree e-commerce page caching tweaks</div>
+          <div class="repo-meta"><span>JavaScript</span><span>⭐ 2</span></div>
+        </div>
+
+        <div class="repo-item">
+          <a href="https://github.com/devsigner/ShipementPricer" target="_blank" class="repo-name">ShipementPricer</a>
+          <div class="repo-desc">Shipping price calculator in Ruby</div>
+          <div class="repo-meta"><span>Ruby</span><span>⭐ 1</span></div>
+        </div>
+
+        <div class="repo-item">
+          <a href="https://github.com/devsigner/translate_routes" target="_blank" class="repo-name">translate_routes</a>
+          <div class="repo-desc">Rails URL translation plugin (fork)</div>
+          <div class="repo-meta"><span>Ruby</span><span>⭐ 1</span></div>
+        </div>
+
+        <div class="repo-item">
+          <a href="https://github.com/devsigner/staticmatic-ready" target="_blank" class="repo-name">staticmatic-ready</a>
+          <div class="repo-desc">Staticmatic + Compass + Blueprint boilerplate</div>
+          <div class="repo-meta"><span>Ruby</span><span>⭐ 1</span></div>
+        </div>
+      </section>
+
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-name">Cedric Darricau</span>
+    <span>Staff Engineer · Lead Full-Stack · France</span>
+    <span>Mis à jour mars 2026</span>
+  </footer>
+
+</div>
+<script>
+  (function() {
+    var items = document.querySelectorAll('.exp-item');
+    var btn = document.getElementById('expMoreBtn');
+    var expanded = false;
+
+    function applyMobile() {
+      if (window.innerWidth > 680) return;
+      items.forEach(function(item, i) {
+        if (i >= 4) item.classList.add('exp-hidden');
+      });
+    }
+
+    function toggle() {
+      expanded = !expanded;
+      items.forEach(function(item, i) {
+        if (i >= 4) item.classList.toggle('exp-hidden', !expanded);
+      });
+      btn.textContent = expanded ? 'Voir moins' : 'Voir plus';
+    }
+
+    applyMobile();
+    btn.addEventListener('click', toggle);
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 680) {
+        items.forEach(function(item) { item.classList.remove('exp-hidden'); });
+      } else if (!expanded) {
+        items.forEach(function(item, i) {
+          if (i >= 4) item.classList.add('exp-hidden');
+        });
+      }
+    });
+  })();
+</script>
+</body>
+</html>
