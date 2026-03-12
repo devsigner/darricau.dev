@@ -89,7 +89,6 @@
   /* ── HEADER ── */
   header {
     margin-bottom: 40px;
-    padding-top: 72px;
     padding-bottom: 48px;
     animation: fadeUp 0.6s ease both;
     position: sticky;
@@ -104,6 +103,7 @@
     line-height: 0.9;
     letter-spacing: -0.04em;
     color: var(--ink);
+    padding-top: 72px;
     margin-bottom: 36px;
     transition: opacity 0.05s linear;
   }
@@ -1186,8 +1186,8 @@
     // ── EASTER EGG RUNNER GAME ──
     let EasterEgg = (function() {
       // Constants
-      let GRAVITY    = 0.55;
-      let JUMP_VEL   = -13;
+      let GRAVITY    = isTouch() ? 0.75 : 0.55;
+      let JUMP_VEL   = isTouch() ? -15 : -13;
       let BASE_SPEED = 5;
       let SPEED_INC  = 0.0008;
       let FRAME_TICKS = 8;
@@ -1217,7 +1217,7 @@
       function canvasSize() {
         return {
           w: Math.min(container.clientWidth  - 32, 960),
-          h: Math.min(container.clientHeight - 80, 480)
+          h: Math.min(container.clientHeight - 80, window.innerHeight - 20)
         };
       }
 
@@ -1241,9 +1241,9 @@
         style.id = 'easter-egg-styles';
         style.textContent = [
           '#ee-overlay {',
-          '  position:fixed; inset:0; z-index:9000;',
+          '  position: absolute; top: 0; inset:0; z-index:9000;',
           '  background:var(--paper);',
-          '  display:none; flex-direction:column;',
+          '  display:none;',
           '  align-items:center; justify-content:center;',
           '  opacity:0; transition:opacity 0.2s ease;',
           '}',
@@ -1290,7 +1290,7 @@
         overlay.appendChild(hint);
         if (isTouch()) overlay.appendChild(closeBtn);
 
-        container.appendChild(overlay);
+        container.prepend(overlay);
 
         ctx = canvas.getContext('2d');
 
