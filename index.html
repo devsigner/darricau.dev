@@ -1,3 +1,9 @@
+<!--
+┌─────────────────────────────────┐
+│  👀 Knew it                     │
+│  Lovable + vibe coding = this.  │
+└─────────────────────────────────┘
+-->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,7 +12,7 @@
 <title>Cedric Darricau — Staff Engineer</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Doto&family=Coral+Pixels&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 <style>
   :root {
     --ink: #111827;
@@ -127,7 +133,7 @@
   }
 
   .draggable-word.is-mono {
-    font-family: 'DM Mono', monospace;
+    font-family: Coral Pixels, cursive;
     font-weight: 400;
     letter-spacing: 0.02em;
     color: var(--muted);
@@ -502,24 +508,24 @@
   }
 
   [data-theme="terminal"] header h1 .draggable-word {
+    font-family: "Doto", sans-serif;
+    text-shadow: 0 0 10px var(--accent), 0 0 20px rgba(57,255,20,0.3);
+    cursor: grab;
+  }
+
+  [data-theme="terminal"] header h1 .draggable-word.is-mono {
     font-family: 'DM Mono', monospace;
     font-weight: 500;
     font-size: 0.8em;
     text-shadow: 0 0 20px var(--accent), 0 0 40px rgba(57,255,20,0.3);
     letter-spacing: 0.02em;
-    cursor: grab;
-  }
-
-  [data-theme="terminal"] header h1 .draggable-word.is-mono {
-    font-family: 'Open Sans', sans-serif;
-    text-shadow: none;
-    color: var(--muted);
+    color: var(--accent);
   }
 
   [data-theme="terminal"] .header-meta .role::after {
     content: '_';
     animation: blink 1s step-end infinite;
-    color: var(--accent);
+    color: var(--muted);
   }
 
   @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
@@ -704,11 +710,11 @@
   <!-- HEADER -->
   <header>
     <h1>
-      <span class="draggable-word" id="word-cedric">Cedric</span><br>
-      <span class="draggable-word" id="word-darricau">Darricau</span>
+      <span class="draggable-word is-mono" id="word-cedric" style="transform: translate(0px, 5px);">Cedric</span><br>
+      <span class="draggable-word is-dragging" id="word-darricau" style="transform: translate(105px, -14px);">Darricau</span>
     </h1>
     <div class="header-meta ">
-      <div class="title-bar draggable-word">
+      <div class="title-bar draggable-word" style="transform: translate(10px, -60px);">
         <span class="role">Staff Engineer</span>
         <span class="sep">·</span>
         <span class="years">+20 ans d'expérience</span>
