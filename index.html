@@ -562,6 +562,22 @@
     box-shadow: 0 0 20px rgba(57,255,20,0.5);
   }
 
+  /* READING PROGRESS BAR */
+  #progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--accent);
+    z-index: 3000;
+    transition: width 0.05s linear;
+  }
+
+  [data-theme="terminal"] #progress-bar {
+    box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(57,255,20,0.4);
+  }
+
   /* PRINT */
   @media print {
     body::before { display: none; }
@@ -935,6 +951,7 @@
 
 </div>
 
+<div id="progress-bar"></div>
 <button class="theme-toggle" id="themeToggle" title="Changer de thème">TERMINAL</button>
 
 <script>
@@ -980,6 +997,15 @@
       });
       btn.textContent = expanded ? 'Voir moins' : 'Voir plus';
     }
+
+    // ── READING PROGRESS BAR ──
+    var progressBar = document.getElementById('progress-bar');
+    function updateProgress() {
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
 
     applyMobile();
     btn.addEventListener('click', toggle);
