@@ -1182,6 +1182,360 @@
         });
       }
     });
+
+    // ── EASTER EGG RUNNER GAME ──
+    let EasterEgg = (function() {
+      // Constants
+      let GRAVITY    = 0.55;
+      let JUMP_VEL   = -13;
+      let BASE_SPEED = 5;
+      let SPEED_INC  = 0.0008;
+      let FRAME_TICKS = 8;
+      let OBS_MIN_GAP = 360;
+      let OBS_MAX_GAP = 680;
+      let MAN_X      = 120;
+      let MAN_H      = 60;
+      let GROUND_RATIO = 0.78;
+
+      let container = document.querySelector('header');
+
+      var overlay, canvas, ctx, hint;
+      var rafId = null;
+      var G = {};  // game state
+
+      function randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; }
+
+      function colors() {
+        var cs = getComputedStyle(document.documentElement);
+        return {
+          ink:   cs.getPropertyValue('--ink').trim()   || '#111827',
+          paper: cs.getPropertyValue('--paper').trim() || '#ffffff',
+          muted: cs.getPropertyValue('--muted').trim() || '#6b7280'
+        };
+      }
+
+      function canvasSize() {
+        return {
+          w: Math.min(container.clientWidth  - 32, 960),
+          h: Math.min(container.clientHeight - 80, 480)
+        };
+      }
+
+      function resizeCanvas() {
+        var sz = canvasSize();
+        canvas.width  = sz.w;
+        canvas.height = sz.h;
+        G.groundY = Math.floor(sz.h * GROUND_RATIO);
+        if (G.manY !== undefined) G.manY = G.groundY;
+      }
+
+      function init() {
+        if (document.getElementById('easter-egg-styles')) return;
+
+        // Inject CSS
+        var style = document.createElement('style');
+        style.id = 'easter-egg-styles';
+        style.textContent = [
+          '#ee-overlay {',
+          '  position:fixed; inset:0; z-index:9000;',
+          '  background:var(--paper);',
+          '  display:none; flex-direction:column;',
+          '  align-items:center; justify-content:center;',
+          '  opacity:0; transition:opacity 0.2s ease;',
+          '}',
+          '#ee-overlay.ee-visible { opacity:1; }',
+          '#ee-canvas { display:block; }',
+          '#ee-hint {',
+          '  position:absolute; bottom:28px; left:50%;',
+          '  transform:translateX(-50%);',
+          '  font-family:"DM Mono",monospace; font-size:0.62rem;',
+          '  letter-spacing:0.14em; text-transform:uppercase;',
+          '  color:var(--muted); pointer-events:none; white-space:nowrap;',
+          '}'
+        ].join('\n');
+        document.head.appendChild(style);
+
+        // Build overlay
+        overlay = document.createElement('div');
+        overlay.id = 'ee-overlay';
+
+        canvas = document.createElement('canvas');
+        canvas.id = 'ee-canvas';
+
+        hint = document.createElement('div');
+        hint.id = 'ee-hint';
+        hint.textContent = 'Space — jump · Esc — exit';
+
+        overlay.appendChild(canvas);
+        overlay.appendChild(hint);
+        container.appendChild(overlay);
+
+        ctx = canvas.getContext('2d');
+
+        window.addEventListener('resize', function() {
+          if (overlay.style.display !== 'none') resizeCanvas();
+        });
+      }
+
+      function makeObstacle() {
+        var sz = canvasSize();
+        var w = randInt(18, 32);
+        var h = randInt(28, Math.min(72, Math.floor(sz.h * 0.35)));
+        var obs = [{ x: sz.w + 20, w: w, h: h }];
+        if (Math.random() < 0.30) {
+          obs.push({ x: sz.w + 20 + w + randInt(8, 18), w: randInt(10, 20), h: randInt(16, h - 6) });
+        }
+        G.nextObsDist = randInt(OBS_MIN_GAP, OBS_MAX_GAP);
+        return obs;
+      }
+
+      function start() {
+        resizeCanvas();
+        G = {
+          tick:      0,
+          speed:     BASE_SPEED,
+          manY:      G.groundY,
+          groundY:   G.groundY,
+          velY:      0,
+          onGround:  true,
+          frame:     0,
+          frameTick: 0,
+          obstacles: [],
+          nextObsDist: randInt(OBS_MIN_GAP, OBS_MAX_GAP),
+          scrollDist:  0,
+          dead:      false,
+          score:     0
+        };
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(gameLoop);
+      }
+
+      var lastTime = 0;
+      function gameLoop(ts) {
+        var dt = Math.min(ts - lastTime, 50);
+        lastTime = ts;
+        update(dt);
+        draw();
+        if (!G.dead) rafId = requestAnimationFrame(gameLoop);
+      }
+
+      function update() {
+        G.tick++;
+        G.speed += SPEED_INC;
+        G.score = Math.floor(G.tick * G.speed / 10);
+
+        // Animate frames
+        G.frameTick++;
+        if (G.frameTick >= FRAME_TICKS) { G.frameTick = 0; G.frame = 1 - G.frame; }
+
+        // Gravity
+        if (!G.onGround) {
+          G.velY += GRAVITY;
+          G.manY += G.velY;
+          if (G.manY >= G.groundY) {
+            G.manY = G.groundY;
+            G.velY = 0;
+            G.onGround = true;
+          }
+        }
+
+        // Scroll distance
+        G.scrollDist += G.speed;
+
+        // Spawn obstacles
+        if (G.scrollDist >= G.nextObsDist) {
+          G.scrollDist = 0;
+          var newObs = makeObstacle();
+          newObs.forEach(function(o) { G.obstacles.push(o); });
+        }
+
+        // Move obstacles
+        G.obstacles.forEach(function(o) { o.x -= G.speed; });
+        G.obstacles = G.obstacles.filter(function(o) { return o.x + o.w > -10; });
+
+        // Collision (AABB with 4px forgiveness)
+        var mx1 = MAN_X - 8 + 4,  mx2 = MAN_X + 8 - 4;
+        var my1 = G.manY - MAN_H + 4, my2 = G.manY - 2;
+        for (var i = 0; i < G.obstacles.length; i++) {
+          var o = G.obstacles[i];
+          var ox1 = o.x + 4, ox2 = o.x + o.w - 4;
+          var oy1 = G.groundY - o.h, oy2 = G.groundY;
+          if (mx2 > ox1 && mx1 < ox2 && my2 > oy1 && my1 < oy2) {
+            G.dead = true;
+            var best = parseInt(localStorage.getItem('ee-best') || '0', 10);
+            if (G.score > best) localStorage.setItem('ee-best', String(G.score));
+            return;
+          }
+        }
+      }
+
+      function draw() {
+        var c = colors();
+        var W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        drawGround(c, W);
+        drawDots(c, W);
+        drawObstacles(c);
+        drawMan(c);
+        drawScore(c, W);
+        if (G.dead) drawGameOver(c, W, H);
+      }
+
+      function drawGround(c, W) {
+        ctx.strokeStyle = c.ink;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, G.groundY);
+        ctx.lineTo(W, G.groundY);
+        ctx.stroke();
+      }
+
+      function drawDots(c, W) {
+        ctx.fillStyle = c.muted;
+        for (var i = 0; i < 6; i++) {
+          // Parallax dots on the ground, spaced 160px apart, moving at 60% of the obstacle speed.
+          var dx = ((G.scrollDist * 0.6 + i * 160) % (W + 20)) - 10;
+          ctx.fillRect(dx, G.groundY + 5, 2, 2);
+        }
+      }
+
+      function drawObstacles(c) {
+        ctx.fillStyle = c.ink;
+        G.obstacles.forEach(function(o) {
+          ctx.fillRect(o.x, G.groundY - o.h, o.w, o.h);
+        });
+      }
+
+      function drawMan(c) {
+        // Pixel-art businessman. S = pixel unit (3 canvas px).
+        // blk(gx, gy, gw, gh): grid units from character centre (cx) and
+        // from feet going UP (gy=0 at fy, gy=20 at top of 60px character).
+        var S  = 3;
+        var cx = MAN_X;
+        var fy = G.manY;
+        var airborne = !G.onGround;
+
+        function blk(gx, gy, gw, gh, col) {
+          ctx.fillStyle = col;
+          ctx.fillRect(
+            Math.round(cx + gx * S),
+            Math.round(fy - (gy + gh) * S),
+            gw * S, gh * S
+          );
+        }
+
+        var ink   = c.ink;
+        var paper = c.paper;
+        var muted = c.muted;
+
+        // Foot lift per frame: 0 = on ground, 1 = mid-stride, 2 = airborne
+        var lLift = airborne ? 2 : (G.frame === 1 ? 1 : 0);
+        var rLift = airborne ? 2 : (G.frame === 0 ? 1 : 0);
+
+        // ── LEGS & SHOES (drawn first — torso overlaps the tops) ──
+        // right leg  [cx+3 → cx+12], right shoe  [cx → cx+15]
+        blk( 1, rLift + 1, 3, 4 - rLift, ink);
+        blk( 0, rLift,     5, 1,          ink);
+        // left leg   [cx-12 → cx-3], left shoe   [cx-15 → cx]
+        blk(-4, lLift + 1, 3, 4 - lLift, ink);
+        blk(-5, lLift,     5, 1,          ink);
+
+        // ── BELT ──
+        blk(-4, 5, 8, 1, muted);
+
+        // ── SUIT JACKET  [cx-12 → cx+12] ──
+        blk(-4, 6, 8, 7, ink);
+        blk(-1, 11, 1, 1, paper);  // left lapel
+        blk( 0, 11, 1, 1, paper);  // right lapel
+
+        // ── ARMS (swing opposite to legs) ──
+        var lArmBase = airborne ? 8 : (G.frame === 0 ? 7 : 9);
+        var rArmBase = airborne ? 8 : (G.frame === 0 ? 9 : 7);
+        blk(-5, lArmBase, 1, 2, ink);
+        blk( 4, rArmBase, 1, 2, ink);
+
+        // ── NECK ──
+        blk(-1, 13, 2, 1, paper);
+
+        // ── HEAD  [cx-9 → cx+9] ──
+        blk(-3, 14, 1, 4, ink);    // left edge
+        blk(-2, 14, 4, 5, paper);  // face
+        blk( 2, 14, 1, 4, ink);    // right edge
+        blk(-2, 17, 1, 1, ink);    // left eye
+        blk( 1, 17, 1, 1, ink);    // right eye
+        blk(-1, 15, 2, 1, ink);    // smile
+
+        // ── HAIR ──
+        blk(-3, 19, 6, 1, ink);    // full-width base
+        blk(-2, 20, 2, 1, ink);    // left spike
+        blk( 0, 20, 3, 1, ink);    // main spike (right)
+      }
+
+      function drawScore(c, W) {
+        var best = parseInt(localStorage.getItem('ee-best') || '0', 10);
+        var cur  = String(G.score).padStart(5, '0');
+        var hi   = String(Math.max(best, G.score)).padStart(5, '0');
+        ctx.fillStyle = c.muted;
+        ctx.font = '500 13px "DM Mono", monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText('HI ' + hi + '    ' + cur, W - 16, 28);
+      }
+
+      function drawGameOver(c, W, H) {
+        ctx.fillStyle = c.ink;
+        ctx.font = '600 20px "DM Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', W / 2, H / 2 - 10);
+        ctx.font = '400 11px "DM Mono", monospace';
+        ctx.fillStyle = c.muted;
+        ctx.fillText('SPACE — restart · ESC — exit', W / 2, H / 2 + 16);
+      }
+
+      function open() {
+        init();
+        overlay.style.display = 'flex';
+        requestAnimationFrame(function() { overlay.classList.add('ee-visible'); });
+        lastTime = performance.now();
+        start();
+      }
+
+      function destroy() {
+        overlay.classList.remove('ee-visible');
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        setTimeout(function() { overlay.style.display = 'none'; }, 220);
+      }
+
+      function jump() {
+        if (G.onGround) {
+          G.velY = JUMP_VEL;
+          G.onGround = false;
+        }
+      }
+
+      function restart() {
+        lastTime = performance.now();
+        start();
+      }
+
+      function isOpen() { return overlay && overlay.style.display !== 'none'; }
+      function isDead() { return G && G.dead; }
+
+      return { open: open, destroy: destroy, jump: jump, restart: restart, isOpen: isOpen, isDead: isDead };
+    })();
+
+    // ── EASTER EGG KEY HANDLER ──
+    document.addEventListener('keydown', function(e) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (!EasterEgg.isOpen())     EasterEgg.open();
+        else if (EasterEgg.isDead()) EasterEgg.restart();
+        else                         EasterEgg.jump();
+      }
+      if (e.code === 'Escape' && EasterEgg.isOpen()) EasterEgg.destroy();
+    });
+
   })();
 </script>
 </body>
