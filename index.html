@@ -14,6 +14,20 @@
     --muted: #7a7060;
     --rule: #d4cebf;
     --highlight: #e8e0d0;
+    --fg-text: #2a2520;
+    --fg-desc: #3a3530;
+  }
+
+  /* ── TERMINAL DARK THEME ── */
+  [data-theme="terminal"] {
+    --ink: #33ff33;
+    --paper: #080808;
+    --accent: #39ff14;
+    --muted: #1c7a1c;
+    --rule: #0d3d0d;
+    --highlight: #0a1a0a;
+    --fg-text: #33ff33;
+    --fg-desc: #2ecf2e;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,9 +41,14 @@
     font-weight: 300;
     line-height: 1.6;
     min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
   }
 
-  /* Grain overlay */
+  [data-theme="terminal"] body {
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Grain / scanlines overlay */
   body::before {
     content: '';
     position: fixed;
@@ -38,6 +57,28 @@
     pointer-events: none;
     z-index: 1000;
     opacity: 0.5;
+    transition: opacity 0.3s;
+  }
+
+  [data-theme="terminal"] body::before {
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.25) 2px,
+      rgba(0,0,0,0.25) 4px
+    );
+    opacity: 1;
+  }
+
+  /* CRT vignette */
+  [data-theme="terminal"] body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+    pointer-events: none;
+    z-index: 999;
   }
 
   .page {
@@ -231,7 +272,7 @@
 
   .exp-desc {
     font-size: 0.85rem;
-    color: #3a3530;
+    color: var(--fg-desc);
     line-height: 1.65;
   }
 
@@ -370,6 +411,157 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
+  /* ── TERMINAL THEME OVERRIDES ── */
+  [data-theme="terminal"] * {
+    transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  [data-theme="terminal"] .header-left h1 {
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    text-shadow: 0 0 20px var(--accent), 0 0 40px rgba(57,255,20,0.3);
+    letter-spacing: -0.01em;
+  }
+
+  [data-theme="terminal"] .header-left h1::after {
+    content: '_';
+    animation: blink 1s step-end infinite;
+    color: var(--accent);
+  }
+
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+  [data-theme="terminal"] header {
+    border-bottom: 1px solid var(--rule);
+    border-bottom-color: var(--accent);
+    box-shadow: 0 1px 0 rgba(57,255,20,0.2);
+  }
+
+  [data-theme="terminal"] .section-label {
+    text-shadow: 0 0 8px var(--accent);
+    letter-spacing: 0.25em;
+  }
+
+  [data-theme="terminal"] .section-label::before {
+    content: '# ';
+    color: var(--accent);
+  }
+
+  [data-theme="terminal"] .company {
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    text-shadow: 0 0 8px rgba(51,255,51,0.5);
+  }
+
+  [data-theme="terminal"] .exp-item::before {
+    content: '>';
+    width: auto;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    color: var(--muted);
+    font-size: 0.7rem;
+    top: 22px;
+    left: -20px;
+  }
+
+  [data-theme="terminal"] .exp-item:hover::before {
+    color: var(--accent);
+    background: none;
+    text-shadow: 0 0 6px var(--accent);
+  }
+
+  [data-theme="terminal"] .stat-value {
+    font-family: 'DM Mono', monospace;
+    text-shadow: 0 0 10px var(--accent);
+  }
+
+  [data-theme="terminal"] .footer-name {
+    font-family: 'DM Mono', monospace;
+  }
+
+  [data-theme="terminal"] .tag {
+    color: var(--ink);
+    border-color: var(--rule);
+    border-radius: 0;
+  }
+
+  [data-theme="terminal"] .tag:hover {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(57,255,20,0.4);
+  }
+
+  [data-theme="terminal"] .tag.primary {
+    background: transparent;
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 6px rgba(57,255,20,0.3);
+  }
+
+  [data-theme="terminal"] .github-link {
+    border-radius: 0;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+
+  [data-theme="terminal"] .github-link:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+    box-shadow: 0 0 10px rgba(57,255,20,0.4);
+  }
+
+  [data-theme="terminal"] .interest-list li::before {
+    content: '$ ';
+  }
+
+  /* THEME TOGGLE BUTTON */
+  .theme-toggle {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 2000;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+
+  .theme-toggle::before { content: '['; color: var(--muted); margin-right: 4px; }
+  .theme-toggle::after  { content: ']'; color: var(--muted); margin-left: 4px; }
+
+  .theme-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  [data-theme="terminal"] .theme-toggle {
+    background: var(--paper);
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(57,255,20,0.3), inset 0 0 12px rgba(57,255,20,0.05);
+    border-radius: 0;
+  }
+
+  [data-theme="terminal"] .theme-toggle::before { content: '[> '; color: var(--muted); }
+  [data-theme="terminal"] .theme-toggle::after  { content: ']'; color: var(--muted); }
+
+  [data-theme="terminal"] .theme-toggle:hover {
+    background: var(--accent);
+    color: var(--paper);
+    box-shadow: 0 0 20px rgba(57,255,20,0.5);
+  }
+
   /* PRINT */
   @media print {
     body::before { display: none; }
@@ -445,7 +637,7 @@
       <!-- SUMMARY -->
       <section>
         <div class="section-label">Profil</div>
-        <p style="font-size:0.92rem; line-height:1.8; color:#2a2520;">
+        <p style="font-size:0.92rem; line-height:1.8; color:var(--fg-text);">
           Ingénieur full-stack passionné avec plus de 20 ans d'expérience dans la conception et le développement de systèmes web robustes et scalables. Spécialisé en <strong>Ruby on Rails</strong> et architectures modernes, j'évolue aujourd'hui au niveau Staff Engineer, où je combine expertise technique approfondie, leadership transverse et vision produit pour faire avancer des équipes entières. De la DA graphique au code backend, mon parcours singulier forge une sensibilité rare à l'intersection du design et de l'ingénierie.
         </p>
       </section>
@@ -741,8 +933,34 @@
   </footer>
 
 </div>
+
+<button class="theme-toggle" id="themeToggle" title="Changer de thème">TERMINAL</button>
+
 <script>
   (function() {
+    // ── THEME TOGGLE ──
+    var root = document.documentElement;
+    var toggleBtn = document.getElementById('themeToggle');
+    var stored = localStorage.getItem('theme');
+
+    function setTheme(t) {
+      if (t === 'terminal') {
+        root.setAttribute('data-theme', 'terminal');
+        toggleBtn.textContent = 'LIGHT';
+      } else {
+        root.removeAttribute('data-theme');
+        toggleBtn.textContent = 'TERMINAL';
+      }
+      localStorage.setItem('theme', t);
+    }
+
+    setTheme(stored === 'terminal' ? 'terminal' : 'light');
+
+    toggleBtn.addEventListener('click', function() {
+      setTheme(root.getAttribute('data-theme') === 'terminal' ? 'light' : 'terminal');
+    });
+
+    // ── EXPERIENCE TOGGLE ──
     var items = document.querySelectorAll('.exp-item');
     var btn = document.getElementById('expMoreBtn');
     var expanded = false;
