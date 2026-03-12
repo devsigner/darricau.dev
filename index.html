@@ -1229,6 +1229,10 @@
         if (G.manY !== undefined) G.manY = G.groundY;
       }
 
+      function isTouch() {
+        return ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+      }
+
       function init() {
         if (document.getElementById('easter-egg-styles')) return;
 
@@ -1244,13 +1248,21 @@
           '  opacity:0; transition:opacity 0.2s ease;',
           '}',
           '#ee-overlay.ee-visible { opacity:1; }',
-          '#ee-canvas { display:block; }',
+          '#ee-canvas { display:block; touch-action:none; }',
           '#ee-hint {',
           '  position:absolute; bottom:28px; left:50%;',
           '  transform:translateX(-50%);',
           '  font-family:"DM Mono",monospace; font-size:0.62rem;',
           '  letter-spacing:0.14em; text-transform:uppercase;',
           '  color:var(--muted); pointer-events:none; white-space:nowrap;',
+          '}',
+          '#ee-close {',
+          '  position:absolute; top:16px; right:20px;',
+          '  font-family:"DM Mono",monospace; font-size:1.1rem;',
+          '  color:var(--muted); background:none; border:none;',
+          '  cursor:pointer; padding:8px 12px; line-height:1;',
+          '  min-width:44px; min-height:44px;',
+          '  display:flex; align-items:center; justify-content:center;',
           '}'
         ].join('\n');
         document.head.appendChild(style);
@@ -1264,10 +1276,20 @@
 
         hint = document.createElement('div');
         hint.id = 'ee-hint';
-        hint.textContent = 'Space — jump · Esc — exit';
+        hint.textContent = isTouch()
+          ? 'tap — jump · × — exit'
+          : 'space — jump · esc — exit';
+
+        var closeBtn = document.createElement('button');
+        closeBtn.id = 'ee-close';
+        closeBtn.textContent = '×';
+        closeBtn.setAttribute('aria-label', 'Close game');
+        closeBtn.addEventListener('click', function() { EasterEgg.destroy(); });
 
         overlay.appendChild(canvas);
         overlay.appendChild(hint);
+        if (isTouch()) overlay.appendChild(closeBtn);
+
         container.appendChild(overlay);
 
         ctx = canvas.getContext('2d');
@@ -1535,6 +1557,31 @@
       }
       if (e.code === 'Escape' && EasterEgg.isOpen()) EasterEgg.destroy();
     });
+
+    // ── EASTER EGG TOUCH HANDLER ──
+    // Double-tap anywhere (not on a link/button) → open
+    // Single tap on the overlay → jump / restart
+    var lastTap = 0;
+    document.addEventListener('touchstart', function(e) {
+      var tag = e.target.tagName;
+      if (tag === 'A' || tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      if (EasterEgg.isOpen()) {
+        // Game is running: single tap = jump or restart
+        e.preventDefault();
+        if (EasterEgg.isDead()) EasterEgg.restart();
+        else                    EasterEgg.jump();
+        return;
+      }
+
+      // Game not open: double-tap to open (300ms window)
+      var now = Date.now();
+      if (now - lastTap < 300) {
+        e.preventDefault();
+        EasterEgg.open();
+      }
+      lastTap = now;
+    }, { passive: false });
 
   })();
 </script>
