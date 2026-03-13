@@ -10,7 +10,7 @@
 
 ## Profil
 
-Staff Engineer avec plus de 20 ans de progression continue : de l'exécution technique à la direction d'architecture et à la montée en compétences des équipes. Mon parcours — de la direction artistique au backend distribué — m'a forgé une double lecture rare, technique et produit. Aujourd'hui, je conçois les systèmes, définis les standards d'ingénierie et accompagne les développeurs pour qu'ils progressent dans leur propre trajectoire. Spécialisé **Ruby on Rails**, architectures API et leadership transverse.
+Staff Engineer avec plus de 20 ans de progression continue : de l'exécution technique à la direction d'architecture et à la montée en compétences des équipes. Mon parcours — de la direction artistique au backend distribué — m'a forgé une double lecture rare, technique et produit. Aujourd'hui, je conçois les systèmes, définis les standards d'ingénierie et accompagne les développeurs pour qu'ils progressent dans leur propre trajectoire. Spécialisé **Ruby on Rails**, architectures et leadership transverse.
 
 ---
 
@@ -38,7 +38,7 @@ Prise de responsabilité sur des sujets d'architecture applicative dans un conte
 **Full-Stack Ruby Developer**
 *nov. 2015 → août 2018 · 2 ans 10 mois · Paris, Île-de-France*
 
-Conception et développement de l'architecture d'une plateforme de réalité augmentée : API Rails, moteur de rendu 3D, intégrations tierces. Première prise en charge complète d'un domaine fonctionnel de bout en bout — choix techniques, découpage des services, validation des contraintes de performance. Transition marquante vers un profil de senior full-stack avec ownership architectural.
+Conception et développement de l'architecture d'une plateforme de réalité augmentée : Rails, moteur de rendu 3D, intégrations tierces. Première prise en charge complète d'un domaine fonctionnel de bout en bout — choix techniques, découpage des services, validation des contraintes de performance. Transition marquante vers un profil de senior full-stack avec ownership architectural.
 
 ### Avantage Graphique
 **Freelance · Design & Web Development**
