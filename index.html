@@ -749,7 +749,8 @@
         <div class="exp-item">
           <div class="exp-header">
             <span class="company">Edulib</span>
-            <span class="period">sept. 2021 → aujourd'hui · 4 ans 7 mois</span>
+            <span class="period" id="edulib-period">sept. 2021 → aujourd'hui · <span id="edulib-duration"
+                  data-date-year=2021 data-date-month=9></span></span>
           </div>
           <div class="role-title">Staff Engineer · Architecture &amp; Engineering Leadership</div>
           <div class="location">📍 Paris, Île-de-France</div>
@@ -1182,6 +1183,28 @@
         });
       }
     });
+
+    // ── EDULIB DURATION ──
+    (function(el) {
+      if (!el) {
+        console.warn('Duration element not found');
+        return
+      };
+      const givenYear = parseInt(el.dataset.dateYear, 10);
+      const givenMonth = parseInt(el.dataset.dateMonth, 10) - 1; // septembre 2021 (mois 0-indexé)
+
+      const start = new Date(givenYear, givenMonth, 1);
+      const now   = new Date();
+
+      let months = (now.getFullYear() - start.getFullYear()) * 12
+                 + (now.getMonth()   - start.getMonth());
+      let years  = Math.floor(months / 12);
+      let rem    = months % 12;
+      let label  = (years > 0 ? years + ' an' + (years > 1 ? 's' : '') : '')
+                 + (years > 0 && rem > 0 ? ' ' : '')
+                 + (rem  > 0 ? rem  + ' mois' : '');
+      el.textContent = label;
+    })(document.getElementById('edulib-duration'));
 
     // ── EASTER EGG RUNNER GAME ──
     let EasterEgg = (function() {
