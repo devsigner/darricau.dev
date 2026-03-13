@@ -1,3 +1,5 @@
+![Capture du rendu](https://darricau.dev/screenshoot.jpeg)
+
 # Cedric Darricau — Staff Engineer
 
 **Staff Engineer · +20 ans d'expérience · France · Full remote**
