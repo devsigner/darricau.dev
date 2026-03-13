@@ -606,6 +606,11 @@
 
   /* THEME TOGGLE */
   .theme-toggle {
+    --ink: #33ff33;
+    --paper: #080808;
+    --accent: #39ff14;
+    --muted: #1c7a1c;
+    --accent-link: #39ff14;
     position: fixed;
     bottom: 28px;
     right: 28px;
@@ -616,7 +621,7 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     background: var(--paper);
-    color: var(--muted);
+    color: var(--ink);
     border: 1px solid var(--rule);
     padding: 7px 14px;
     cursor: pointer;
@@ -625,22 +630,30 @@
 
   .theme-toggle:hover {
     border-color: var(--ink);
-    color: var(--ink);
+    color: var(--accent-link);
   }
 
   [data-theme="terminal"] .theme-toggle {
+    --ink: #111827;
+    --paper: #ffffff;
+    --accent: #111827;
+    --muted: #6b7280;
     background: var(--paper);
-    color: var(--accent);
+    color: var(--ink);
     border-color: var(--accent);
     box-shadow: 0 0 12px rgba(57,255,20,0.3), inset 0 0 12px rgba(57,255,20,0.05);
     border-radius: 0;
   }
 
-  [data-theme="terminal"] .theme-toggle::before { content: '[> '; color: var(--muted); }
-  [data-theme="terminal"] .theme-toggle::after  { content: ']'; color: var(--muted); }
+  .theme-toggle::before { content: '[> '; color: var(--muted); }
+  .theme-toggle::after  { content: ']'; color: var(--muted); }
+  [data-theme="terminal"] .theme-toggle::before { content: ''; }
+  [data-theme="terminal"] .theme-toggle::after  { content: ''; }
 
   [data-theme="terminal"] .theme-toggle:hover {
-    background: var(--accent);
+    --ink: #111827;
+    --paper: #ffffff;
+    background: var(--ink);
     color: var(--paper);
     box-shadow: 0 0 20px rgba(57,255,20,0.5);
   }
