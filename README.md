@@ -119,15 +119,9 @@ MacBook Pro · Alacritty · Tmux · Nvim · Arc · Git · GitHub · Docker · Fi
 
 ---
 
-## Projets GitHub
+## Projets
 
 - [🧠 Nemory](https://nemory-app.darricau.dev) — Application de mémorisation espacée *(privé)*
-- [prawn-invoice-example](https://github.com/devsigner/prawn-invoice-example) — PDF invoice generation with Ruby Prawn · Ruby · ⭐ 12 · 🔀 5
-- [spree_page_cache](https://github.com/devsigner/spree_page_cache) — Spree e-commerce page caching tweaks · JavaScript · ⭐ 2
-- [ShipementPricer](https://github.com/devsigner/ShipementPricer) — Shipping price calculator in Ruby · Ruby · ⭐ 1
-- [translate_routes](https://github.com/devsigner/translate_routes) — Rails URL translation plugin (fork) · Ruby · ⭐ 1
-- [staticmatic-ready](https://github.com/devsigner/staticmatic-ready) — Staticmatic + Compass + Blueprint boilerplate · Ruby · ⭐ 1
-
 ---
 
 *Staff Engineer · Lead Full-Stack · France — Mis à jour mars 2026*
